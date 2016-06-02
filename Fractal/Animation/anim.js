@@ -8,6 +8,10 @@ function anim()
   {
     this.Render.Init(CanvasName);
     this.Mouse.Init(CanvasName);
+  }
+
+  this.Run = function( CanvasName )
+  {
     this.DrawAll();
   }
 

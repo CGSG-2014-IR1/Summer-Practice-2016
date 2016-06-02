@@ -19,27 +19,33 @@ function uv()
 
   this.Addition = function( rhs )
   {
-    var res = new vec();
-    res = this;
-    res.X += rhs.X;
-    res.Y += rhs.Y;
+    var res = new uv();
+    res.X = rhs.X + this.X;
+    res.Y = rhs.Y + this.Y;
     return res;
   }
 
   this.Subtraction = function( rhs )
   {
-    var res = new vec();
-    res = this;
-    res.X -= rhs.X;
-    res.Y -= rhs.Y;
+    var res = new uv();
+    res.X = this.X - rhs.X;
+    res.Y = this.Y - rhs.Y;
+    return res;
+  }
+
+  this.MulNum = function( rhs )
+  {
+    var res = new uv();
+    res.X = this.X * rhs;
+    res.Y = this.Y * rhs;
     return res;
   }
 
   this.Cross = function( rhs )
   {
-    var res = new vec();
-    res.X = Y * rhs.Z - Z * rhs.Y;
-    res.Y = Z * rhs.X - X * rhs.Z;
+    var res = new uv();
+    res.X = this.Y * rhs.Z - this.Z * rhs.Y;
+    res.Y = this.Z * rhs.X - this.X * rhs.Z;
     return res;
   }
 

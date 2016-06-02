@@ -2,6 +2,15 @@ precision mediump float;
 
 uniform float Iterations;
 uniform float Threshold;
+uniform vec2 Shift;
+
+uniform float WinW;
+uniform float WinH;
+
+uniform float L;
+uniform float R;
+uniform float T;
+uniform float B;
 
 struct complex
 {
@@ -31,22 +40,22 @@ float AbsSquare( complex z )
 
 void main( void )
 {
-  float W = 500.0;
-  float H = 500.0;
+  float W = WinW;
+  float H = WinH;
   vec2 coor;
   coor.x = gl_FragCoord.x / W;
-  coor.y = gl_FragCoord.y / W;
+  coor.y = gl_FragCoord.y / H;
 
-  coor = coor * vec2(2, 2) - vec2(1, 1);
+  coor = coor * vec2(R - L, T - B) - vec2(1, 1);
 
   complex C;
-  C.Re = coor.x;
-  C.Im = coor.y;
+  C.Re = coor.x + Shift.x;
+  C.Im = coor.y + Shift.y;
   complex Z;
   Z.Re = 0.0;
   Z.Im = 0.0;
 
-  const int IterationsMax = 256;
+  const int IterationsMax = 128;
   int cnt;
   bool flag = false;
   for (int i = 0; i < IterationsMax; i++)

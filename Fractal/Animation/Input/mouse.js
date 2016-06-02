@@ -1,31 +1,56 @@
 function mouse()
 {
-  this.Pos = new uv();
-  this.ClickPos = new uv();
-
-  this.GetMousePos = function( canvas, evt )
+  this.GetMousePos = function( evt )
   {
-    var rect = canvas.getBoundingClientRect();
+    var rect = this.Canvas.getBoundingClientRect();
     var coord = new uv();
     coord.Set(
-      (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
-      (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height);
+      (evt.clientX - rect.left) / (rect.right - rect.left) * this.Canvas.width,
+      (evt.clientY - rect.top) / (rect.bottom - rect.top) * this.Canvas.height);
     return coord;
+  }
+
+  this.Abs2Rel = function ( Abs )
+  {
+    var ret = Abs;
+    ret.X = ret.X / this.Canvas.width;
+    ret.Y = ret.Y / this.Canvas.height * -1.0;
+    return ret;
   }
 
   this.Init = function( CanvasId )
   {
-    var canvas = document.getElementById(CanvasId);
-    var context = canvas.getContext('2d');
+    this.Canvas = document.getElementById(CanvasId);
+
+    this.Pos = new uv();
+    this.DownPos = new uv();
+    this.Down = false;
+    this.UpPos = new uv();
+    this.ClickPos = new uv();
+    this.WheelPos = 0.0;
 
     var self = this;
-    canvas.addEventListener('mousemove', function(evt)
+    this.Canvas.addEventListener("mousemove", function(evt)
     {
-      self.Pos = self.GetMousePos(canvas, evt);
+      self.Pos = self.GetMousePos(evt);
     }, false);
-    canvas.addEventListener('mouseclick', function(evt)
+    this.Canvas.addEventListener("mousedown", function(evt)
     {
-      self.Pos = self.GetMousePos(canvas, evt);
+      self.Down = true;
+      self.DownPos = self.GetMousePos(evt);
+    }, false);
+    this.Canvas.addEventListener("mouseup", function(evt)
+    {
+      self.Down = false;
+      self.UpPos = self.GetMousePos(evt);
+    }, false);
+    this.Canvas.addEventListener("click", function(evt)
+    {
+      self.ClickPos = self.GetMousePos(evt);
+    }, false);
+    this.Canvas.addEventListener("mousewheel", function(evt)
+    {
+      self.WheelPos += evt.wheelDelta;
     }, false);
   }
 }
