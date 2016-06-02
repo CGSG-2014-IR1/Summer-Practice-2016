@@ -14,7 +14,7 @@ function mouse()
   {
     var ret = Abs;
     ret.X = ret.X / this.Canvas.width;
-    ret.Y = ret.Y / this.Canvas.height * -1.0;
+    ret.Y = ret.Y / this.Canvas.height;
     return ret;
   }
 

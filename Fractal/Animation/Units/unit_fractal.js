@@ -30,6 +30,12 @@ function unit_fractal()
     this.ShiftD.Set(0.0, 0.0);
     this.PrevDown = new uv();
     this.PrevDown.Set(-1.0, -1.0);
+
+    this.PrevWheel = 0;
+    this.W = this.H = 2;
+    this.L = this.B = -1;
+    this.R = this.T = 1;
+    this.Scale = 1;
   }
 
   this.Render = function( Ani )
@@ -41,10 +47,10 @@ function unit_fractal()
     Ani.Render.Context.uniform1f(this.WinWUniform, Ani.Render.Canvas.width);
     Ani.Render.Context.uniform1f(this.WinHUniform, Ani.Render.Canvas.height);
 
-    Ani.Render.Context.uniform1f(this.LUniform, -1);
-    Ani.Render.Context.uniform1f(this.RUniform, 1);
-    Ani.Render.Context.uniform1f(this.BUniform, -1);
-    Ani.Render.Context.uniform1f(this.TUniform, 1);
+    Ani.Render.Context.uniform1f(this.LUniform, this.L);
+    Ani.Render.Context.uniform1f(this.RUniform, this.R);
+    Ani.Render.Context.uniform1f(this.BUniform, this.B);
+    Ani.Render.Context.uniform1f(this.TUniform, this.T);
 
     var Shift = new uv();
     Shift = this.ShiftD.Addition(this.ShiftB);
@@ -55,13 +61,32 @@ function unit_fractal()
 
   this.Response = function( Ani )
   {
+    // Zoom
+    var scale = (Ani.Mouse.WheelPos - this.PrevWheel) / 1920.0 + 1.0;
+    this.Scale *= scale;
+    if (scale != 1.0)
+    {
+      var mrel = (Ani.Mouse.Pos);
+      var fx = (mrel.X / Ani.Render.Canvas.width);
+      var fy = (mrel.Y / Ani.Render.Canvas.height);
+      this.L = this.L + fx * this.W * (1 - scale);
+      this.R = this.L + this.W * scale;
+      this.B = this.B + fy * this.H * (1 - scale);
+      this.T = this.B + this.H * scale;
+      this.W *= scale;
+      this.H *= scale;
+
+      this.PrevWheel = Ani.Mouse.WheelPos;
+    }
+
+    // Drag
     if (this.PrevDown.X == -1)
       if (!Ani.Mouse.Down)
         return;
       else
         this.PrevDown = Ani.Mouse.DownPos;
     if (this.PrevDown == Ani.Mouse.DownPos && Ani.Mouse.Down)
-      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos));
+      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(this.Scale);
     else
       if (!Ani.Mouse.Down)
       {
