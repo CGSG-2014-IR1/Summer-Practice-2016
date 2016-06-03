@@ -8,21 +8,24 @@ function unit_fractal()
     p2.Set( 1,  1, 0);
     p3.Set( 1, -1, 0);
     this.QuadPrim = CreateQuad(Ani.Render.Context, p0, p1, p2, p3, new vec());
-    var Mtl = new material();
-    Mtl.LoadShader(Ani.Render.Context, "mandelbrot");
-    this.QuadPrim.Material = Mtl;
+    var mtl = new material(Ani.Render.Context);
+    mtl.LoadShader(Ani.Render.Context, "mandelbrot");
+    var tex = new texture(Ani.Render.Context, 0, "Gradient");
+    tex.Load("Bin/Textures/gradient2.bmp");
+    mtl.AddTexture(tex);
+    this.QuadPrim.Material = mtl;
 
-    this.ThresholdUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "Threshold");
-    this.IterationsUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "Iterations");
-    this.ShiftUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "Shift");
+    this.ThresholdUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Threshold");
+    this.IterationsUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Iterations");
+    this.ShiftUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Shift");
 
-    this.WinWUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "WinW");
-    this.WinHUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "WinH");
+    this.WinWUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "WinW");
+    this.WinHUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "WinH");
 
-    this.LUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "L");
-    this.RUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "R");
-    this.TUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "T");
-    this.BUniform = Ani.Render.Context.getUniformLocation(Mtl.Shader.Program, "B");
+    this.LUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "L");
+    this.RUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "R");
+    this.TUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "T");
+    this.BUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "B");
 
     this.ShiftB = new uv();
     this.ShiftB.Set(0.0, 0.0);

@@ -1,5 +1,9 @@
-function material()
+function material( Context )
 {
+  this.Textures = [];
+  this.TexUniforms = [];
+  this.Context = Context;
+
   this.SetShader = function( NShader )
   {
     this.Shader = NShader;
@@ -14,5 +18,16 @@ function material()
   this.Apply = function( Context )
   {
     this.Shader.Apply(Context);
+    for (var i = 0; i < this.Textures.length; i++)
+    {
+      this.Textures[i].Apply();
+      Context.uniform1i(this.TexUniforms[i], this.Textures[i].Slot);
+    }
+  }
+
+  this.AddTexture = function ( Tex )
+  {
+    this.Textures.push(Tex);
+    this.TexUniforms.push(this.Context.getUniformLocation(this.Shader.Program, Tex.Name));
   }
 }

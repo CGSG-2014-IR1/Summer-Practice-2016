@@ -50,7 +50,11 @@ function mouse()
     }, false);
     this.Canvas.addEventListener("mousewheel", function(evt)
     {
-      self.WheelPos += evt.wheelDelta;
+      self.WheelPos -= evt.wheelDelta;
+    }, false);
+    this.Canvas.addEventListener("mouseout", function(evt)
+    {
+      self.Down = false;
     }, false);
   }
 }

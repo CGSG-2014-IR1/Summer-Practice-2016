@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 uniform float Iterations;
 uniform float Threshold;
@@ -11,6 +11,8 @@ uniform float L;
 uniform float R;
 uniform float T;
 uniform float B;
+
+uniform sampler2D Gradient;
 
 struct complex
 {
@@ -87,6 +89,6 @@ void main( void )
   else
   {
     float col = (float(brk) / float(IterationsMax));
-    gl_FragColor = vec4(0.1 * col, 0.6 * col, 0.3 * col, 1);
+    gl_FragColor = texture2D(Gradient, vec2(col, coor.y));
   }
 }
