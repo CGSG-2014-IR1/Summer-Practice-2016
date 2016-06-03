@@ -11,7 +11,7 @@ function unit_fractal()
     var mtl = new material(Ani.Render.Context);
     mtl.LoadShader(Ani.Render.Context, "mandelbrot");
     var tex = new texture(Ani.Render.Context, 0, "Gradient");
-    tex.Load("Bin/Textures/gradient2.bmp");
+    tex.Load("Bin/Textures/gradient3.bmp");
     mtl.AddTexture(tex);
     this.QuadPrim.Material = mtl;
 
