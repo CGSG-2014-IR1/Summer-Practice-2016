@@ -3,6 +3,11 @@
 <html>
 <head>
   <title> IR1 WebGL Library </title>
+  <script type="text/javascript" src="API/jquery.js"></script>
+
+  <link rel="stylesheet" href="Plugins/color_picker/colorpicker.css" type="text/css"/>
+  <script type="text/javascript" src="Plugins/color_picker/colorpicker.js"></script>
+
   <script type="text/javascript" src="Math/vec.js"></script>
   <script type="text/javascript" src="Math/uv.js"></script>
 
@@ -16,7 +21,6 @@
   <script type="text/javascript" src="Animation/unit.js"></script>
   <script type="text/javascript" src="Animation/anim.js"></script>
 
-  <script type="text/javascript" src="Animation/Units/unit_test.js"></script>
   <script type="text/javascript" src="Animation/Units/unit_fractal.js"></script>
   <script>
     function Main( CanvasName )
@@ -42,5 +46,9 @@
   <input id="fractal_threshold" type="text" value="4">
     Threshold
   </input>
+
+  <div id="color_picker1" style="background-color: black; height: 36px; width: 36px"></div>
+  <div id="color_picker2" style="background-color: black; height: 36px; width: 36px"></div>
+
 </body>
 </html>

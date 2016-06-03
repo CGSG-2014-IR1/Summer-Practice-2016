@@ -27,6 +27,9 @@ function unit_fractal()
     this.TUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "T");
     this.BUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "B");
 
+    this.C0Uniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "C0");
+    this.C1Uniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "C1");
+
     this.ShiftB = new uv();
     this.ShiftB.Set(0.0, 0.0);
     this.ShiftD = new uv();
@@ -39,6 +42,33 @@ function unit_fractal()
     this.L = this.B = -1;
     this.R = this.T = 1;
     this.Scale = 1;
+
+    this.C0 = new vec();
+    this.C0.Set(0, 0, 0);
+    this.C1 = new vec();
+    this.C1.Set(0, 0, 0);
+    var self = this;
+    $('#color_picker1').ColorPicker(
+    {
+      flat: false,
+      color: '#00ff00',
+      onSubmit: function(hsb, hex, rgb)
+      {
+        $('#color_picker1').css('backgroundColor', '#' + hex);
+        self.C0.Set(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0);
+      }
+    });
+
+    $('#color_picker2').ColorPicker(
+      {
+        flat: false,
+        color: '#00ff00',
+        onSubmit: function(hsb, hex, rgb)
+        {
+          $('#color_picker2').css('backgroundColor', '#' + hex);
+          self.C1.Set(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0);
+        }
+      });
   }
 
   this.Render = function( Ani )
@@ -54,6 +84,9 @@ function unit_fractal()
     Ani.Render.Context.uniform1f(this.RUniform, this.R);
     Ani.Render.Context.uniform1f(this.BUniform, this.B);
     Ani.Render.Context.uniform1f(this.TUniform, this.T);
+
+    Ani.Render.Context.uniform3f(this.C0Uniform, this.C0.X, this.C0.Y, this.C0.Z);
+    Ani.Render.Context.uniform3f(this.C1Uniform, this.C1.X, this.C1.Y, this.C1.Z);
 
     var Shift = new uv();
     Shift = this.ShiftD.Addition(this.ShiftB);
