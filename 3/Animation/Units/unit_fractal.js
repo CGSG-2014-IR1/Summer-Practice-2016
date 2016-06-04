@@ -1,0 +1,124 @@
+function unit_fractal()
+{
+  this.Init = function( Ani )
+  {
+    var p0 = new vec(), p1 = new vec(), p2 = new vec(), p3 = new vec();
+    p0.Set(-1, -1, 0);
+    p1.Set(-1,  1, 0);
+    p2.Set( 1,  1, 0);
+    p3.Set( 1, -1, 0);
+    this.QuadPrim = CreateQuad(Ani.Render.Context, p0, p1, p2, p3,new vec().Set(0.6, 0.1, 0.1));
+    var mtl = new material(Ani.Render.Context);
+    mtl.LoadShader(Ani.Render.Context, "mandelbrot");
+    var tex = new texture(Ani.Render.Context, 0, "Gradient");
+    tex.Load("Bin/Textures/gradient2.bmp");
+    mtl.AddTexture(tex);
+    this.QuadPrim.Material = mtl;
+
+    var d0 = new vec(), d1 = new vec();
+    d0.Set(-1, -1, -1);
+    d1.Set(1, 1, 1);
+    this.CubePrim = CreateBox(Ani.Render.Context, d0, d1, new vec().Set(1.0, 1.0, 1.0));
+    var mtl1 = new material(Ani.Render.Context);
+    mtl1.LoadShader(Ani.Render.Context, "model");
+    mtl1.AddTexture(tex);
+    this.CubePrim.Material = mtl1;
+
+    this.ThresholdUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Threshold");
+    this.IterationsUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Iterations");
+    this.ShiftUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Shift");
+
+    this.WinWUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "WinW");
+    this.WinHUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "WinH");
+
+    this.LUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "L");
+    this.RUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "R");
+    this.TUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "T");
+    this.BUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "B");
+
+    this.ShiftB = new uv();
+    this.ShiftB.Set(0.0, 0.0);
+    this.ShiftD = new uv();
+    this.ShiftD.Set(0.0, 0.0);
+    this.PrevDown = new uv();
+    this.PrevDown.Set(-1.0, -1.0);
+
+    this.PrevWheel = 0;
+    this.W = this.H = 2;
+    this.L = this.B = -1;
+    this.R = this.T = 1;
+    this.Scale = 1;
+
+    this.fb = new framebuffer(Ani.Render.Context, 512, 512);
+  }
+
+  this.Render = function( Ani )
+  {
+    this.QuadPrim.Material.Apply(Ani);
+    Ani.Render.Context.uniform1f(this.IterationsUniform, document.getElementById("fractal_iterations").value);
+    Ani.Render.Context.uniform1f(this.ThresholdUniform, document.getElementById("fractal_threshold").value);
+
+    Ani.Render.Context.uniform1f(this.WinWUniform, Ani.Render.Canvas.width);
+    Ani.Render.Context.uniform1f(this.WinHUniform, Ani.Render.Canvas.height);
+
+    Ani.Render.Context.uniform1f(this.LUniform, this.L);
+    Ani.Render.Context.uniform1f(this.RUniform, this.R);
+    Ani.Render.Context.uniform1f(this.BUniform, this.B);
+    Ani.Render.Context.uniform1f(this.TUniform, this.T);
+
+    var Shift = new uv();
+    Shift = this.ShiftD.Addition(this.ShiftB);
+    Ani.Render.Context.uniform2f(this.ShiftUniform, Shift.X, Shift.Y);
+
+    this.fb.Bind();
+    this.QuadPrim.Draw(Ani);
+    var tex = this.QuadPrim.Material.Textures[0].Tex;
+    this.fb.UnBind();
+    this.CubePrim.Material.Textures[0].SetTex(this.fb.Texture);
+    this.CubePrim.Draw(Ani);
+    this.CubePrim.Material.Textures[0].SetTex(tex);
+  }
+
+  this.Response = function( Ani )
+  {
+    // Zoom
+    var scale = (Ani.Mouse.WheelPos - this.PrevWheel) / 1920.0 + 1.0;
+    this.Scale *= scale;
+    if (scale != 1.0)
+    {
+      var mrel = (Ani.Mouse.Pos);
+      var fx = (mrel.X / Ani.Render.Canvas.width);
+      var fy = (mrel.Y / Ani.Render.Canvas.height);
+      this.L = this.L + fx * this.W * (1 - scale);
+      this.R = this.L + this.W * scale;
+      this.B = this.B + fy * this.H * (1 - scale);
+      this.T = this.B + this.H * scale;
+      this.W *= scale;
+      this.H *= scale;
+
+      this.PrevWheel = Ani.Mouse.WheelPos;
+    }
+
+    // Drag
+    if (this.PrevDown.X == -1)
+      if (!Ani.Mouse.Down)
+        return;
+      else
+        this.PrevDown = Ani.Mouse.DownPos;
+    if (this.PrevDown == Ani.Mouse.DownPos && Ani.Mouse.Down)
+      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(this.Scale);
+    else
+      if (!Ani.Mouse.Down)
+      {
+        var com = new uv();
+        com.Set(0.0, 0.0);
+        if (this.ShiftD != com)
+        {
+          this.ShiftB = this.ShiftB.Addition(this.ShiftD);
+          this.ShiftD.Set(0, 0);
+        }
+      }
+      else
+        this.PrevDown = Ani.Mouse.DownPos;
+  }
+}
