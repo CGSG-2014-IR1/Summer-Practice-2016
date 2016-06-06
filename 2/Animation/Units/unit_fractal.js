@@ -89,7 +89,7 @@ function unit_fractal()
       else
         this.PrevDown = Ani.Mouse.DownPos;
     if (this.PrevDown == Ani.Mouse.DownPos && Ani.Mouse.Down)
-      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(this.Scale);
+      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(2.0 * this.Scale);
     else
       if (!Ani.Mouse.Down)
       {

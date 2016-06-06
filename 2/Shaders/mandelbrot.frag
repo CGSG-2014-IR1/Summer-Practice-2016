@@ -55,10 +55,12 @@ void main( void )
   coor.x -= (R - L) / 2.0 - R;
   coor.y *= (T - B) / 2.0;
   coor.y -= (T - B) / 2.0 - T;
+  coor.x += Shift.x;
+  coor.y += Shift.y;
 
   complex C;
-  C.Re = coor.x + Shift.x;
-  C.Im = coor.y + Shift.y;
+  C.Re = coor.x;
+  C.Im = coor.y;
   complex Z;
   Z.Re = C.Re;
   Z.Im = C.Im;
