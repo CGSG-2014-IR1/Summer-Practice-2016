@@ -23,6 +23,7 @@ function mouse()
     this.Canvas = document.getElementById(CanvasId);
 
     this.Pos = new uv();
+    this.PosDelta = new uv();
     this.DownPos = new uv();
     this.Down = false;
     this.UpPos = new uv();
@@ -32,7 +33,9 @@ function mouse()
     var self = this;
     this.Canvas.addEventListener("mousemove", function(evt)
     {
-      self.Pos = self.GetMousePos(evt);
+      var curpos = self.GetMousePos(evt);
+      self.PosDelta = self.Pos - curpos;
+      self.Pos = curpos;;
     }, false);
     this.Canvas.addEventListener("mousedown", function(evt)
     {

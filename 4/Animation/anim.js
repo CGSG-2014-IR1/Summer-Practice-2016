@@ -19,6 +19,19 @@ function anim()
     this.Camera.position.y = 1;
     this.Camera.position.z = 1;
     this.Camera.lookAt(this.Scene.position);
+
+    this.ReflectionCamera = new THREE.CubeCamera(0.1, 1000, 1024);
+
+    this.Controls = new THREE.OrbitControls(this.Camera);
+  }
+
+  this.RenderReflection = function( Mesh )
+  {
+    Mesh.visible = false;
+    this.ReflectionCamera.position.copy(Mesh.position);
+    this.ReflectionCamera.updateCubeMap(this.Render.Renderer, this.Scene);
+
+    Mesh.visible = true;
   }
 
   this.Run = function( CanvasName )
@@ -36,9 +49,13 @@ function anim()
   this.DrawAll = function()
   {
     this.Timer.Update();
+    this.Controls.update(this.Timer.DeltaTime);
+
     for (var i = 0; i < this.Units.length; i++)
       this.Units[i].Response(this);
 
+    for (var i = 0; i < this.Units.length; i++)
+      this.Units[i].Render(this);
     this.Render.Renderer.render(this.Scene, this.Camera);
 
     var self = this;

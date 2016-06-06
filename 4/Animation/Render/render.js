@@ -12,6 +12,5 @@ function render()
   this.Init = function( CanvasName )
   {
     this.InitGL();
-    //this.AppliedShader = new shader(this.Context, "simple");
   }
 }

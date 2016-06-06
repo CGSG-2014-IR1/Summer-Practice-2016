@@ -1,35 +1,22 @@
 function material( Context )
 {
   this.Textures = [];
-  this.TexUniforms = [];
-  this.Context = Context;
-
-  this.SetShader = function( NShader )
+  this.CreateCubeMapMaterial = function( Path, Format )
   {
-    this.Shader = NShader;
-  }
+    var ctex = new texture();
+    ctex.CreateCubeMap(Path, Format);
+    this.Textures.push(ctex);
 
-  this.LoadShader = function( Context, ShaderName )
-  {
-    this.Shader = new shader(Context, ShaderName);
-    this.Shader.Init();
-  }
+    this.Shader = new shader();
+    this.Shader.CreateCubeMapShader(this.Textures[0]);
 
-  this.Apply = function( Ani )
-  {
-    var Context = Ani.Render.Context;
-    this.Shader.Apply(Context);
-    for (var i = 0; i < this.Textures.length; i++)
+    this.Mtl = new THREE.ShaderMaterial(
     {
-      this.Textures[i].Apply();
-      Context.uniform1i(this.TexUniforms[i], this.Textures[i].Slot);
-    }
-    Ani.Render.AppliedShader = this.Shader;
-  }
-
-  this.AddTexture = function ( Tex )
-  {
-    this.Textures.push(Tex);
-    this.TexUniforms.push(this.Context.getUniformLocation(this.Shader.Program, Tex.Name));
+      fragmentShader: this.Shader.Shader.fragmentShader,
+      vertexShader: this.Shader.Shader.vertexShader,
+      uniforms: this.Shader.Shader.uniforms,
+      depthWrite: false,
+      side: THREE.BackSide
+    });
   }
 }
