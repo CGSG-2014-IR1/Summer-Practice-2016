@@ -11,7 +11,6 @@
       overflow: hidden;
     }
   </style>
-
   <script type="text/javascript" src="API/three.js"></script>
   <script type="text/javascript" src="API/jquery.js"></script>
   <script type="text/javascript" src="API/OrbitControls.js"></script>
@@ -35,6 +34,11 @@
   <script type="text/javascript" src="Animation/anim.js"></script>
 
   <script type="text/javascript" src="Animation/Units/unit_test.js"></script>
+
+  <script type="x-shader/x-vertex" src="Shaders/model.vert" id="Shaders/model.vert"></script>
+  <script type="x-shader/x-fragment" src="Shaders/model.frag" id="Shaders/model.frag"></script>
+  <script type="x-shader/x-vertex" src="Shaders/optic.vert" id="Shaders/optic.vert"></script>
+  <script type="x-shader/x-fragment" src="Shaders/optic.frag" id="Shaders/optic.frag"></script>
   <script>
     function Main( CanvasName )
     {

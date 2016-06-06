@@ -20,7 +20,7 @@ function anim()
     this.Camera.position.z = 1;
     this.Camera.lookAt(this.Scene.position);
 
-    this.ReflectionCamera = new THREE.CubeCamera(0.1, 1000, 1024);
+    this.ReflectionCamera = new THREE.CubeCamera(0.1, 1000, 512);
 
     this.Controls = new THREE.OrbitControls(this.Camera);
   }
@@ -49,33 +49,37 @@ function anim()
   this.DrawAll = function()
   {
     this.Timer.Update();
-    this.Controls.update(this.Timer.DeltaTime);
+    this.Controls.update(this.Timer.GlobalDeltaTime);
+    var self = this;
 
-    for (var i = 0; i < this.Units.length; i++)
-      this.Units[i].Response(this);
+    this.Units.forEach(function(Unit)
+      {
+        Unit.Response(self);
+      }
+    );
 
-    for (var i = 0; i < this.Units.length; i++)
-      this.Units[i].Render(this);
+    this.Scene.children.forEach(function(Child)
+      {
+        if (Child instanceof(THREE.Mesh))
+          if (Child.material.transparent == true)
+            Child.visible = false;
+      });
+    this.Render.Renderer.render(this.Scene, this.Camera, this.Render.RefractionRender);
+    this.Scene.children.forEach(function(Child)
+      {
+        Child.visible = true;
+      });
+    this.Units.forEach(function(Unit)
+      {
+        Unit.Render(self);
+      }
+    );
     this.Render.Renderer.render(this.Scene, this.Camera);
 
     var self = this;
     window.requestAnimationFrame(function() {
       self.DrawAll();
     });
-  }
-
-  this.ApplyMatrixes = function()
-  {
-    this.Render.Context.uniformMatrix4fv(this.Render.Context.
-      getUniformLocation(this.Render.AppliedShader.Program, "World"), false, this.World);
-    this.Render.Context.uniformMatrix4fv(this.Render.Context.
-      getUniformLocation(this.Render.AppliedShader.Program, "View"), false, this.Camera.MatrixView);
-    this.Render.Context.uniformMatrix4fv(this.Render.Context.
-      getUniformLocation(this.Render.AppliedShader.Program, "Proj"), false, this.Camera.MatrixProjection);
-    var m = mat4.create();
-    mat4.transpose(this.Camera.MatrixViewProjection, m);
-    this.Render.Context.uniformMatrix4fv(this.Render.Context.
-      getUniformLocation(this.Render.AppliedShader.Program, "VP"), false, this.Camera.MatrixViewProjection);
   }
 
   this.AddPrimitive = function( Prim )

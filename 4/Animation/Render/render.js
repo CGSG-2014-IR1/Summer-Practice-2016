@@ -7,6 +7,8 @@ function render()
     this.Renderer.setClearColor(col, 1);
     this.Renderer.setSize(window.innerWidth, window.innerHeight);
     this.Renderer.shadowMap.enabled = true;
+
+    this.RefractionRender = new THREE.WebGLRenderTarget(512, 512);
   }
 
   this.Init = function( CanvasName )
