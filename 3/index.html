@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title> IR1 WebGL Library </title>
+  <script type="text/javascript" src="Math/vec.js"></script>
+  <script type="text/javascript" src="Math/uv.js"></script>
+  <script type="text/javascript" src="Math/matrix.js"></script>
+
+  <script type="text/javascript" src="Animation/Input/mouse.js"></script>
+  <script type="text/javascript" src="Animation/Render/render.js"></script>
+  <script type="text/javascript" src="Animation/Render/framebuffer.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/texture.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/shader.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/material.js"></script>
+  <script type="text/javascript" src="Animation/Render/Primitive/prim.js"></script>
+  <script type="text/javascript" src="Animation/Render/Primitive/sprim.js"></script>
+  <script type="text/javascript" src="Animation/unit.js"></script>
+  <script type="text/javascript" src="Animation/camera.js"></script>
+  <script type="text/javascript" src="Animation/anim.js"></script>
+
+  <script type="text/javascript" src="Animation/Units/unit_fractal.js"></script>
+  <script>
+    function Main( CanvasName )
+    {
+      var Anim = new anim();
+
+      Anim.Init(CanvasName);
+
+      Anim.UnitAdd(new unit_fractal());
+
+      Anim.Run();
+    }
+  </script>
+</head>
+
+<body onload="Main('canvas_main')">
+  <canvas id="canvas_main" style="border: 10px solid black" width="1366" height="768"></canvas>
+  <br>
+  <input id="fractal_iterations" type="number" value="127" min="2" max="127">
+    Number of iterations
+  </input>
+  <br>
+  <input id="fractal_threshold" type="text" value="4">
+    Threshold
+  </input>
+</body>
+</html>

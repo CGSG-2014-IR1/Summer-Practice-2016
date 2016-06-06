@@ -7,13 +7,22 @@ function unit_fractal()
     p1.Set(-1,  1, 0);
     p2.Set( 1,  1, 0);
     p3.Set( 1, -1, 0);
-    this.QuadPrim = CreateQuad(Ani.Render.Context, p0, p1, p2, p3, new vec());
+    this.QuadPrim = CreateQuad(Ani.Render.Context, p0, p1, p2, p3,new vec().Set(0.6, 0.1, 0.1));
     var mtl = new material(Ani.Render.Context);
     mtl.LoadShader(Ani.Render.Context, "mandelbrot");
     var tex = new texture(Ani.Render.Context, 0, "Gradient");
-    tex.Load("Bin/Textures/gradient3.bmp");
+    tex.Load("Bin/Textures/gradient2.bmp");
     mtl.AddTexture(tex);
     this.QuadPrim.Material = mtl;
+
+    var d0 = new vec(), d1 = new vec();
+    d0.Set(-1, -1, -1);
+    d1.Set(1, 1, 1);
+    this.CubePrim = CreateBox(Ani.Render.Context, d0, d1, new vec().Set(1.0, 1.0, 1.0));
+    var mtl1 = new material(Ani.Render.Context);
+    mtl1.LoadShader(Ani.Render.Context, "model");
+    mtl1.AddTexture(tex);
+    this.CubePrim.Material = mtl1;
 
     this.ThresholdUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Threshold");
     this.IterationsUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "Iterations");
@@ -26,9 +35,6 @@ function unit_fractal()
     this.RUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "R");
     this.TUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "T");
     this.BUniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "B");
-
-    this.C0Uniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "C0");
-    this.C1Uniform = Ani.Render.Context.getUniformLocation(mtl.Shader.Program, "C1");
 
     this.ShiftB = new uv();
     this.ShiftB.Set(0.0, 0.0);
@@ -43,37 +49,12 @@ function unit_fractal()
     this.R = this.T = 1;
     this.Scale = 1;
 
-    this.C0 = new vec();
-    this.C0.Set(0, 0, 0);
-    this.C1 = new vec();
-    this.C1.Set(0, 0, 0);
-    var self = this;
-    $('#color_picker1').ColorPicker(
-    {
-      flat: false,
-      color: '#00ff00',
-      onSubmit: function(hsb, hex, rgb)
-      {
-        $('#color_picker1').css('backgroundColor', '#' + hex);
-        self.C0.Set(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0);
-      }
-    });
-
-    $('#color_picker2').ColorPicker(
-      {
-        flat: false,
-        color: '#00ff00',
-        onSubmit: function(hsb, hex, rgb)
-        {
-          $('#color_picker2').css('backgroundColor', '#' + hex);
-          self.C1.Set(rgb.r / 255.0, rgb.g / 255.0, rgb.b / 255.0);
-        }
-      });
+    this.fb = new framebuffer(Ani.Render.Context, 512, 512);
   }
 
   this.Render = function( Ani )
   {
-    this.QuadPrim.Material.Apply(Ani.Render.Context);
+    this.QuadPrim.Material.Apply(Ani);
     Ani.Render.Context.uniform1f(this.IterationsUniform, document.getElementById("fractal_iterations").value);
     Ani.Render.Context.uniform1f(this.ThresholdUniform, document.getElementById("fractal_threshold").value);
 
@@ -85,14 +66,17 @@ function unit_fractal()
     Ani.Render.Context.uniform1f(this.BUniform, this.B);
     Ani.Render.Context.uniform1f(this.TUniform, this.T);
 
-    Ani.Render.Context.uniform3f(this.C0Uniform, this.C0.X, this.C0.Y, this.C0.Z);
-    Ani.Render.Context.uniform3f(this.C1Uniform, this.C1.X, this.C1.Y, this.C1.Z);
-
     var Shift = new uv();
     Shift = this.ShiftD.Addition(this.ShiftB);
     Ani.Render.Context.uniform2f(this.ShiftUniform, Shift.X, Shift.Y);
 
-    this.QuadPrim.Draw(Ani.Render.Context);
+    this.fb.Bind();
+    this.QuadPrim.Draw(Ani);
+    var tex = this.QuadPrim.Material.Textures[0].Tex;
+    this.fb.UnBind();
+    this.CubePrim.Material.Textures[0].SetTex(this.fb.Texture);
+    this.CubePrim.Draw(Ani);
+    this.CubePrim.Material.Textures[0].SetTex(tex);
   }
 
   this.Response = function( Ani )
@@ -122,7 +106,7 @@ function unit_fractal()
       else
         this.PrevDown = Ani.Mouse.DownPos;
     if (this.PrevDown == Ani.Mouse.DownPos && Ani.Mouse.Down)
-      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(2.0 * this.Scale);
+      this.ShiftD = Ani.Mouse.Abs2Rel(this.PrevDown.Subtraction(Ani.Mouse.Pos)).MulNum(this.Scale);
     else
       if (!Ani.Mouse.Down)
       {

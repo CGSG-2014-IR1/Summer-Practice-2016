@@ -14,9 +14,6 @@ uniform float B;
 
 uniform sampler2D Gradient;
 
-uniform vec3 C0;
-uniform vec3 C1;
-
 struct complex
 {
   float Re, Im;
@@ -58,12 +55,10 @@ void main( void )
   coor.x -= (R - L) / 2.0 - R;
   coor.y *= (T - B) / 2.0;
   coor.y -= (T - B) / 2.0 - T;
-  coor.x += Shift.x;
-  coor.y += Shift.y;
 
   complex C;
-  C.Re = coor.x;
-  C.Im = coor.y;
+  C.Re = coor.x + Shift.x;
+  C.Im = coor.y + Shift.y;
   complex Z;
   Z.Re = C.Re;
   Z.Im = C.Im;
@@ -94,7 +89,6 @@ void main( void )
   else
   {
     float col = (float(brk) / float(IterationsMax));
-    gl_FragColor = vec4(C0 * col + C1 * (1.0 - col), 1);
-    //gl_FragColor = texture2D(Gradient, vec2(col, coor.y));
+    gl_FragColor = texture2D(Gradient, vec2(col, coor.y));
   }
 }

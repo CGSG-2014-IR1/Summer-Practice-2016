@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title> IR1 WebGL Library </title>
+
+  <style>
+    body
+    {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script type="text/javascript" src="API/three.js"></script>
+  <script type="text/javascript" src="API/jquery.js"></script>
+
+  <script type="text/javascript" src="Math/vec.js"></script>
+  <script type="text/javascript" src="Math/uv.js"></script>
+  <script type="text/javascript" src="Math/matrix.js"></script>
+
+  <script type="text/javascript" src="Animation/Input/mouse.js"></script>
+  <script type="text/javascript" src="Animation/Render/render.js"></script>
+  <script type="text/javascript" src="Animation/Render/framebuffer.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/texture.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/shader.js"></script>
+  <script type="text/javascript" src="Animation/Render/Resources/material.js"></script>
+  <script type="text/javascript" src="Animation/Render/Primitive/prim.js"></script>
+  <script type="text/javascript" src="Animation/Render/Primitive/sprim.js"></script>
+  <script type="text/javascript" src="Animation/unit.js"></script>
+  <script type="text/javascript" src="Animation/timer.js"></script>
+  <script type="text/javascript" src="Animation/anim.js"></script>
+
+  <script type="text/javascript" src="Animation/Units/unit_test.js"></script>
+  <script>
+    function Main( CanvasName )
+    {
+      var Anim = new anim();
+
+      Anim.Init(CanvasName);
+      Anim.UnitAdd(new unit_test());
+
+      Anim.Run();
+    }
+  </script>
+</head>
+
+<body onload="Main('webg_holder')">
+  <div id="webg_holder"></div>
+</body>
+</html>
