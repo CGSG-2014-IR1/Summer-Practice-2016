@@ -58,17 +58,6 @@ function anim()
       }
     );
 
-    this.Scene.children.forEach(function(Child)
-      {
-        if (Child instanceof(THREE.Mesh))
-          if (Child.material.transparent == true)
-            Child.visible = false;
-      });
-    this.Render.Renderer.render(this.Scene, this.Camera, this.Render.RefractionRender);
-    this.Scene.children.forEach(function(Child)
-      {
-        Child.visible = true;
-      });
     this.Units.forEach(function(Unit)
       {
         Unit.Render(self);

@@ -15,8 +15,9 @@ function unit_test()
     var PointLight = new THREE.AmbientLight( 0x666666 );
 
     this.Skybox = CreateSkybox("Bin/Textures/skybox/forbidden/", ".jpg");
+    this.Skybox.Mesh.material.receiveShadow = true;
     this.Spheres = [];
-    for (var i = 0; i < 20; i++)
+    for (var i = 0; i < 3; i++)
     {
       var sp = CreateSphere(Math.random() * 0.5 + 0.2, 10, 10,
         new THREE.MeshPhongMaterial({color: 0xffffff * Math.random(), shininess: 40, opacity: 0.6, transparent: false}));
@@ -34,7 +35,6 @@ function unit_test()
             uniforms:
               {
                 "TextureReflection": { type: "t", value: Ani.ReflectionCamera.renderTarget.texture },
-                "TextureRefraction": { type: "t", value: Ani.Render.RefractionRender.texture },
                 "CameraPos": { type: "v3", value: Ani.Camera.position }
               },
             vertexShader: LoadShaderText("Shaders/optic.vert"),
@@ -48,33 +48,26 @@ function unit_test()
         })
         geometry.scale.set(0.2, 0.2, 0.2);
         geometry.position.y = -1.0;
-        self.Nuke = geometry;
+        self.Skull = geometry;
         Ani.Scene.add(geometry);
       });
 
-    var plane = new CreatePlane(15, 15, new THREE.MeshPhongMaterial(
-      {
-        color: 0xaaaaaa, specular: 0xff3333, shininess: 40, side: THREE.DoubleSide
-      }));
-    plane.Mesh.position.y = -1.0;
     Ani.AddPrimitive(this.Skybox)
-      .AddPrimitive(plane)
       .AddLight(SpotLight).AddLight(PointLight);
   }
 
   this.Render = function( Ani )
   {
-    if (this.Nuke)
-      Ani.RenderReflection(this.Nuke.children[0]);
+    if (this.Skull)
+      Ani.RenderReflection(this.Skull.children[0]);
   }
 
   this.Response = function( Ani )
   {
-    if (this.Nuke)
+    if (this.Skull)
     {
-      this.Nuke.children[0].material.uniforms.TextureReflection.value = Ani.ReflectionCamera.renderTarget.texture;
-      this.Nuke.children[0].material.uniforms.TextureRefraction.value = Ani.Render.RefractionRender.texture;
-      this.Nuke.children[0].material.uniforms.CameraPos.value = Ani.Camera.position;
+      this.Skull.children[0].material.uniforms.TextureReflection.value = Ani.ReflectionCamera.renderTarget.texture;
+      this.Skull.children[0].material.uniforms.CameraPos.value = Ani.Camera.position;
     }
 
     this.Spheres.forEach(function(sp)
@@ -82,6 +75,10 @@ function unit_test()
       sp.Mesh.position.set(Math.sin((Ani.Timer.Time + sp.OrbitRadius) * sp.OrbitRadius) * sp.OrbitRadius,
         Math.sin((Ani.Timer.Time - sp.OrbitRadius) * sp.OrbitRadius) * 0.5,
         Math.cos((Ani.Timer.Time + sp.OrbitRadius) * sp.OrbitRadius) * sp.OrbitRadius);
+/*
+      sp.Mesh.position.set(Math.sin((0 + sp.OrbitRadius) * sp.OrbitRadius) * sp.OrbitRadius,
+        Math.sin((0 - sp.OrbitRadius) * sp.OrbitRadius) * 0.5,
+        Math.cos((0 + sp.OrbitRadius) * sp.OrbitRadius) * sp.OrbitRadius);*/
     });
   }
 }
