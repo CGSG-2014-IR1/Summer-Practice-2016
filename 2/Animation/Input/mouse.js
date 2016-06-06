@@ -38,6 +38,7 @@ function mouse()
     {
       self.Down = true;
       self.DownPos = self.GetMousePos(evt);
+      self.Canvas.style.cursor = "default";
     }, false);
     this.Canvas.addEventListener("mouseup", function(evt)
     {
@@ -54,6 +55,12 @@ function mouse()
     }, false);
     this.Canvas.addEventListener("mouseout", function(evt)
     {
+      window.onscroll = function () {};
+      self.Down = false;
+    }, false);
+    this.Canvas.addEventListener("mouseover", function(evt)
+    {
+      window.onscroll = function () { window.scrollTo(0, 0); };
       self.Down = false;
     }, false);
   }
