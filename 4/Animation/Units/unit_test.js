@@ -2,6 +2,13 @@ function unit_test()
 {
   this.Init = function( Ani )
   {
+    var self = this;
+    this.RefractionCoefficient = 1.4;
+    Ani.gui.add({refr: 1.4}, 'refr').min(0.1).max(3.0).step(0.1).onFinishChange(function(val)
+      {
+        self.RefractionCoefficient = val;
+      });
+
     var SpotLight = new THREE.SpotLight( 0xffffff );
     SpotLight.position.set(0.0, 10.0, 10.0);
     SpotLight.castShadow = true;
@@ -27,7 +34,6 @@ function unit_test()
     }
 
     var loader = new THREE.OBJLoader();
-    var self = this;
     loader.load('Bin/Objects/skull/skull.obj', function(geometry)
       {
         var material = new THREE.ShaderMaterial(
@@ -35,10 +41,11 @@ function unit_test()
             uniforms:
               {
                 "TextureReflection": { type: "t", value: Ani.ReflectionCamera.renderTarget.texture },
-                "CameraPos": { type: "v3", value: Ani.Camera.position }
+                "CameraPos": { type: "v3", value: Ani.Camera.position },
+                "RefractionCoefficient": { type: "f", value: self.RefractionCoefficient }
               },
             vertexShader: LoadShaderText("Shaders/optic.vert"),
-            fragmentShader: LoadShaderText("Shaders/optic.frag")
+            fragmentShader: LoadShaderText("Shaders/optic.frag"),
           });
         geometry.children.forEach(function(child)
         {
@@ -68,6 +75,7 @@ function unit_test()
     {
       this.Skull.children[0].material.uniforms.TextureReflection.value = Ani.ReflectionCamera.renderTarget.texture;
       this.Skull.children[0].material.uniforms.CameraPos.value = Ani.Camera.position;
+      this.Skull.children[0].material.uniforms.RefractionCoefficient.value = this.RefractionCoefficient;
     }
 
     this.Spheres.forEach(function(sp)

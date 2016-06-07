@@ -23,6 +23,12 @@ function anim()
     this.ReflectionCamera = new THREE.CubeCamera(0.1, 1000, 512);
 
     this.Controls = new THREE.OrbitControls(this.Camera);
+
+    this.Stats = new Stats();
+    this.Stats.showPanel(0);
+    document.body.appendChild(this.Stats.dom);
+
+    this.gui = new DAT.GUI({height: 1 * 32 - 1});
   }
 
   this.RenderReflection = function( Mesh )
@@ -49,6 +55,7 @@ function anim()
   this.DrawAll = function()
   {
     this.Timer.Update();
+    this.Stats.begin();
     this.Controls.update(this.Timer.GlobalDeltaTime);
     var self = this;
 
@@ -66,9 +73,11 @@ function anim()
     this.Render.Renderer.render(this.Scene, this.Camera);
 
     var self = this;
-    window.requestAnimationFrame(function() {
+    window.requestAnimationFrame(function()
+    {
       self.DrawAll();
     });
+    this.Stats.end();
   }
 
   this.AddPrimitive = function( Prim )
