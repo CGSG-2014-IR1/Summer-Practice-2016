@@ -44,6 +44,7 @@ function unit_test()
           "CameraPos": { type: "v3", value: Ani.Camera.position },
           "RefractionCoefficient": { type: "f", value: self.RefractionCoefficient }
         },
+        side: THREE.DoubleSide,
         vertexShader: LoadShaderText("Shaders/optic.vert"),
         fragmentShader: LoadShaderText("Shaders/optic.frag"),
       });
@@ -85,6 +86,11 @@ function unit_test()
 
   this.Response = function( Ani )
   {
+    if (this.Skull)
+    {
+      this.Skull.children[2].position.set(0, -Math.abs(Math.sin(Ani.Timer.Time * 10.0)) * 0.25, 0);
+      this.Skull.children[3].position.set(0, -Math.abs(Math.sin(Ani.Timer.Time * 10.0)) * 0.25, 0);
+    }
     this.Spheres.forEach(function(sp)
     {
       sp.Mesh.position.set(Math.sin((Ani.Timer.Time + sp.OrbitRadius) * sp.OrbitRadius) * sp.OrbitRadius,

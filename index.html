@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title> IR1 Summer practice </title>
+
+  <script type="text/javascript" src="API/jquery.js"></script>
+  <script type="text/javascript">
+    function main()
+    {
+      $("#task_select").change(function()
+      {
+        var v = $("#task_select").val();
+        if (v != "notask")
+          $("#presentation").attr('src', v + "/index.html");
+      });
+    }
+  </script>
+</head>
+
+<body onload="main()">
+  <select id="task_select">
+    <option value="notask">Select task to show</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+  <br>
+  <iframe id="presentation" width="1500" height="900"></iframe>
+</body>
+</html>

@@ -16,7 +16,7 @@ float Fresnel( vec3 Dir, vec3 Norm)
   float R0 = (n1 - RefractionCoefficient) / (n1 + RefractionCoefficient);
   R0 *= R0;
 
-  return (1.0 - R0 - (1.0 - R0) * pow(1.0 - abs(dot(Dir, Norm)), 2.0));
+  return (1.0 - R0 - (1.0 - R0) * pow(1.0 - (dot(Dir, Norm)), 2.0));
 }
 
 float rand( vec2 co )
@@ -33,9 +33,10 @@ void main()
 {
   vec3 dir = normalize(Pos - CameraPos);
   vec3 dnorm = Norm;
-  dnorm += noise(Pos * Norm) * 0.05;
+  dnorm += noise(Pos * Norm) * 0.05 / length(Pos - CameraPos);
 
   vec4 refl = textureCube(TextureReflection, reflect(-dir, dnorm));
   vec4 refr = textureCube(TextureReflection, refract(dir, dnorm, n1 / RefractionCoefficient));
   gl_FragColor = mix(refl, refr, Fresnel(dir, dnorm));
+  //gl_FragColor = vec4(Fresnel(dir, dnorm), Fresnel(dir, dnorm), Fresnel(dir, dnorm), 1);
 }

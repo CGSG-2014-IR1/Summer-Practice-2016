@@ -28,7 +28,9 @@ function anim()
     this.Stats.showPanel(0);
     document.body.appendChild(this.Stats.dom);
 
-    this.gui = new DAT.GUI({height: 2 * 32 - 1});
+    this.gui = new DAT.GUI({height: 3 * 32 - 1});
+    var self = this;
+    this.gui.add({pause: function(){ self.Timer.TogglePause() }}, 'pause').name('Stop/run');
   }
 
   this.RenderReflection = function( Mesh )
