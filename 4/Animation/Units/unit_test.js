@@ -4,16 +4,14 @@ function unit_test()
   {
     var self = this;
     this.RefractionCoefficient = 1.4;
-    Ani.gui.add({refr: 1.4}, 'refr').min(0.1).max(3.0).step(0.1).onFinishChange(function(val)
+    Ani.gui.add({refr: 1.4}, 'refr').min(0.1).max(3.0).step(0.1).name('Refraction coefficient').onFinishChange(function(val)
       {
         self.RefractionCoefficient = val;
       });
 
     var SpotLight = new THREE.SpotLight( 0xffffff );
     SpotLight.position.set(0.0, 10.0, 10.0);
-    SpotLight.castShadow = true;
-    SpotLight.shadow.mapSize.width = 4096;
-    SpotLight.shadow.mapSize.height = 4096;
+    SpotLight.castShadow = false;
     SpotLight.distance = 400;
     SpotLight.power = 6;
     SpotLight.angle = 0.3;
