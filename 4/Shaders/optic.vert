@@ -4,7 +4,6 @@ varying vec2 PosS;
 
 void main()
 {
-  Norm = normalMatrix * normal;
   Norm = normal;
   Pos = position;
   vec4 glPos = projectionMatrix * modelViewMatrix * vec4(position, 1.0);

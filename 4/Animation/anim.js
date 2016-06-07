@@ -28,7 +28,7 @@ function anim()
     this.Stats.showPanel(0);
     document.body.appendChild(this.Stats.dom);
 
-    this.gui = new DAT.GUI({height: 1 * 32 - 1});
+    this.gui = new DAT.GUI({height: 2 * 32 - 1});
   }
 
   this.RenderReflection = function( Mesh )
