@@ -9,7 +9,7 @@ function render()
     this.Renderer.shadowMap.enabled = true;
   }
 
-  this.Init = function( CanvasName )
+  this.Init = function()
   {
     this.InitGL();
   }

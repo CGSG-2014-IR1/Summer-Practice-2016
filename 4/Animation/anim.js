@@ -1,80 +1,86 @@
 function anim()
 {
-  this.Units = [];
-  this.Render = new render();
-  this.Mouse = new mouse();
-  this.World = mat4.create();
-  this.Timer = new timer();
-  mat4.identity(this.World);
+  this.Units = [];                                                                                     // Units stock
+  this.Render = new render();                                                                          // Scene renderer
+  this.Timer = new timer();                                                                            // Scene timer
 
-  this.Init = function( CanvasName )
+  /**
+   * Initialize animation.
+   */
+  this.Init = function()
   {
-    this.Render.Init(CanvasName);
-    this.Mouse.Init(CanvasName);
+    var self = this;
+    this.Render.Init();
     this.Timer.Init();
-    this.Camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.Camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);  // Main scene camera
 
-    this.Scene = new THREE.Scene();
+    this.Scene = new THREE.Scene();                                                                    // Main scene
     this.Camera.position.x = 1;
     this.Camera.position.y = 1;
     this.Camera.position.z = 1;
     this.Camera.lookAt(this.Scene.position);
 
-    this.ReflectionCamera = new THREE.CubeCamera(0.1, 1000, 512);
+    this.ReflectionCamera = new THREE.CubeCamera(0.01, 1000, 512);                                     // Cubemap camera
+    this.ReflectionCamera.position.set(0, 0, 0);
 
-    this.Controls = new THREE.OrbitControls(this.Camera);
+    this.Controls = new THREE.OrbitControls(this.Camera);                                              // Scene controls
 
-    this.Stats = new Stats();
+    this.Stats = new Stats();                                                                          // FPS counter
     this.Stats.showPanel(0);
     document.body.appendChild(this.Stats.dom);
 
-    this.gui = new DAT.GUI({height: 3 * 32 - 1});
-    var self = this;
+    this.gui = new DAT.GUI({height: 3 * 32 - 1});                                                      // height = NumberOfRows * 32 - 1. Yes, I correct it by hands every time.
     this.gui.add({pause: function(){ self.Timer.TogglePause() }}, 'pause').name('Stop/run');
   }
 
-  this.RenderReflection = function( Mesh )
+  /**
+   * Start animation cycle.
+   * @param DivID - ID of WebGL holder.
+   */
+  this.Run = function( DivID )
   {
-    Mesh.visible = false;
-    this.ReflectionCamera.position.copy(Mesh.position);
-    this.ReflectionCamera.updateCubeMap(this.Render.Renderer, this.Scene);
-
-    Mesh.visible = true;
-  }
-
-  this.Run = function( CanvasName )
-  {
-    $("#webg_holder").append(this.Render.Renderer.domElement);
+    $("#" + DivID).append(this.Render.Renderer.domElement);
     this.DrawAll();
   }
 
+  /**
+   * Add unit to animation.
+   * @param Unit - unit to add.
+   */
   this.UnitAdd = function( Unit )
   {
     this.Units.push(Unit);
     this.Units[this.Units.length - 1].Init(this);
   }
 
+  /**
+   * Render scene.
+   */
   this.DrawAll = function()
   {
     this.Timer.Update();
-    this.Stats.begin();
     this.Controls.update(this.Timer.GlobalDeltaTime);
+    this.Stats.begin();
     var self = this;
 
+    // Response
     this.Units.forEach(function(Unit)
       {
         Unit.Response(self);
       }
     );
 
+    // Units render. Seems useless again.
     this.Units.forEach(function(Unit)
       {
         Unit.Render(self);
       }
     );
+    // Reflection render
+    this.ReflectionCamera.updateCubeMap(this.Render.Renderer, this.Scene);
+    // Scene render
     this.Render.Renderer.render(this.Scene, this.Camera);
 
-    var self = this;
     window.requestAnimationFrame(function()
     {
       self.DrawAll();

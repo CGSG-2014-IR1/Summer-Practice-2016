@@ -1,0 +1,10 @@
+{
+  "name" : "ir1-summer-practice-2016",
+  "author": "ir1",
+  "version" : "1.0.0",
+  "main" : "launch.js",
+  "dependencies" :
+  {
+    "express" : "" 
+  }
+}

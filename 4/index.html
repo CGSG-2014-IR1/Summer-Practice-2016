@@ -21,11 +21,8 @@
 
   <script type="text/javascript" src="Math/vec.js"></script>
   <script type="text/javascript" src="Math/uv.js"></script>
-  <script type="text/javascript" src="Math/matrix.js"></script>
 
-  <script type="text/javascript" src="Animation/Input/mouse.js"></script>
   <script type="text/javascript" src="Animation/Render/render.js"></script>
-  <script type="text/javascript" src="Animation/Render/framebuffer.js"></script>
   <script type="text/javascript" src="Animation/Render/Resources/texture.js"></script>
   <script type="text/javascript" src="Animation/Render/Resources/shader.js"></script>
   <script type="text/javascript" src="Animation/Render/Resources/material.js"></script>
@@ -42,14 +39,14 @@
   <script type="x-shader/x-vertex" src="Shaders/optic.vert" id="Shaders/optic.vert"></script>
   <script type="x-shader/x-fragment" src="Shaders/optic.frag" id="Shaders/optic.frag"></script>
   <script>
-    function Main( CanvasName )
+    function Main( DivID )
     {
       var Anim = new anim();
 
-      Anim.Init(CanvasName);
+      Anim.Init();
       Anim.UnitAdd(new unit_test());
 
-      Anim.Run();
+      Anim.Run(DivID);
     }
   </script>
 </head>

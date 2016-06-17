@@ -75,9 +75,10 @@ function unit_test()
 
   this.Render = function( Ani )
   {
+    this.Skybox.Mesh.scale.set(Ani.Camera.far / 2, Ani.Camera.far / 2, Ani.Camera.far / 2);
+    this.Skybox.Mesh.position.copy(Ani.Camera.position);
     if (this.Skull)
     {
-      Ani.RenderReflection(this.Skull.children[0]);
       this.Skull.children[0].material.uniforms.TextureReflection.value = Ani.ReflectionCamera.renderTarget.texture;
       this.Skull.children[0].material.uniforms.CameraPos.value = Ani.Camera.position;
       this.Skull.children[0].material.uniforms.RefractionCoefficient.value = this.RefractionCoefficient;

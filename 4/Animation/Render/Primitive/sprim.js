@@ -88,7 +88,7 @@ function CreateSkybox( Path, Format )
   mtl.CreateCubeMapMaterial(Path, Format);
 
   ret.Mesh = new THREE.Mesh(
-    new THREE.CubeGeometry(999, 999, 999), mtl.Mtl);
+    new THREE.CubeGeometry(1, 1, 1), mtl.Mtl);
   ret.Material = mtl;
 
   return ret;
